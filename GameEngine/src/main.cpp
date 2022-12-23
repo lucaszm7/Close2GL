@@ -18,10 +18,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void APIENTRY DebugCallBack(GLenum source, GLenum type, GLuint id, GLenum severity,
     GLsizei length, const GLchar* message, const void* userParam);
 
-float smilePercentage = 0.2f;
+float zoom = 2.0f;
 bool isPressedUp = false;
 bool isPressedDown = false;
 
+glm::vec2 center = { -0.5f, 0.0f };
+bool isPressedW = false;
+bool isPressedA = false;
+bool isPressedS = false;
+bool isPressedD = false;
+
+int maxIterations = 1000;
+bool isPressedQ = false;
+bool isPressedE = false;
 
 int main()
 {
@@ -58,10 +67,10 @@ int main()
     std::vector<float> vertices = 
     {
         // positions         // colors          // texture coords
-         0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  2.0f, 2.0f,
-         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  2.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 2.0f
+         1.0f,  1.0f, 0.0f,  1.0f, 1.0f, 0.0f,  2.0f, 2.0f,
+         1.0f, -1.0f, 0.0f,  0.0f, 1.0f, 0.0f,  2.0f, 0.0f,
+        -1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 2.0f
     };
 
     std::vector<unsigned int> indices = 
@@ -113,12 +122,18 @@ int main()
         float colorValue = (sin(timeValue) / 2.0f) + 0.5f;
 
         glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        // trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        // trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
 
         shader.SetUniform4f("outColor", 0.0f, colorValue, 0.0f, 1.0f);
-        shader.SetUniform1f("smilePercentage", smilePercentage);
+        // shader.SetUniform1f("smilePercentage", smilePercentage);
         shader.SetUniformMatrix4fv("transform", trans);
+
+        shader.SetUniform2f("u_resolution", 800.0f, 600.0f);
+        shader.SetUniform2f("u_center", center.x, center.y);
+        shader.SetUniform1f("u_zoom", zoom);
+        shader.SetUniform1i("u_maxIterations", maxIterations);
+
         texture0.Bind(0);
         texture1.Bind(1);
         texture2.Bind(2);
@@ -149,7 +164,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     else if (key == GLFW_KEY_UP && action == GLFW_RELEASE && isPressedUp)
     {
         isPressedUp = false;
-        if (smilePercentage < 1.0f) smilePercentage += 0.2f;
+        zoom -= 0.2f * zoom;
+        std::cout << "Zoom: " << zoom << "\n";
     }
 
     else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS && !isPressedDown)
@@ -157,8 +173,64 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     else if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE && isPressedDown)
     {
         isPressedDown = false;
-        if (smilePercentage > -1.0f) smilePercentage -= 0.2f;
+        zoom += 0.2f * zoom;
+        std::cout << "Zoom: " << zoom << "\n";
     }
+
+    else if (key == GLFW_KEY_W && action == GLFW_PRESS && !isPressedW)
+        isPressedW = true;
+    else if (key == GLFW_KEY_W && action == GLFW_RELEASE && isPressedW)
+    {
+        isPressedW = false;
+        center.y += 0.1f * zoom;
+        std::cout << "Center: " << center.x << ", " << center.y << "\n";
+    }
+
+    else if (key == GLFW_KEY_A && action == GLFW_PRESS && !isPressedA)
+        isPressedA = true;
+    else if (key == GLFW_KEY_A && action == GLFW_RELEASE && isPressedA)
+    {
+        isPressedA = false;
+        center.x -= 0.1f * zoom;
+        std::cout << "Center: " << center.x << ", " << center.y << "\n";
+    }
+
+    else if (key == GLFW_KEY_S && action == GLFW_PRESS && !isPressedS)
+        isPressedS = true;
+    else if (key == GLFW_KEY_S && action == GLFW_RELEASE && isPressedS)
+    {
+        isPressedS = false;
+        center.y -= 0.1f * zoom;
+        std::cout << "Center: " << center.x << ", " << center.y << "\n";
+    }
+
+    else if (key == GLFW_KEY_D && action == GLFW_PRESS && !isPressedD)
+        isPressedD = true;
+    else if (key == GLFW_KEY_D && action == GLFW_RELEASE && isPressedD)
+    {
+        isPressedD = false;
+        center.x += 0.1f * zoom;
+        std::cout << "Center: " << center.x << ", " << center.y << "\n";
+    }
+
+    else if (key == GLFW_KEY_Q && action == GLFW_PRESS && !isPressedQ)
+        isPressedQ = true;
+    else if (key == GLFW_KEY_Q && action == GLFW_RELEASE && isPressedQ)
+    {
+        isPressedQ = false;
+        maxIterations *= 2;
+        std::cout << "Max Iterations: " << maxIterations << "\n";
+    }
+
+    else if (key == GLFW_KEY_E && action == GLFW_PRESS && !isPressedE)
+        isPressedE = true;
+    else if (key == GLFW_KEY_E && action == GLFW_RELEASE && isPressedE)
+    {
+        isPressedE = false;
+        maxIterations /= 2;
+        std::cout << "Max Iterations: " << maxIterations << "\n";
+    }
+
 }
 
 void APIENTRY

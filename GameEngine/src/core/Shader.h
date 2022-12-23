@@ -28,7 +28,9 @@ public:
 	void Unbind() const;
 	void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
 	void SetUniform1i(const std::string& name, int v0);
+	void SetUniform1ui(const std::string& name, unsigned int v0);
 	void SetUniform1f(const std::string& name, float v0);
+	void SetUniform2f(const std::string& name, float v0, float v1);
 	void SetUniformMatrix4fv(const std::string& name, const glm::mat4& mat4);
 
 	// void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
