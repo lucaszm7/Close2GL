@@ -203,17 +203,17 @@ int main()
     mat.specular = glm::vec3(1.0f) * glm::vec3(0.5f, 0.5f, 0.5f);
     mat.shininess = 32.0f;
 
-    DirectionalLight dirLight( {1.0f, 1.0f, 1.0f}, { -0.2f, -1.0f, -0.3f });
+    DirectionalLight dirLight( {0.0f, 0.0f, 0.0f}, { -0.2f, -1.0f, -0.3f });
 
     std::vector<PointLight> pointLights =
     {
-        { {1.0f, 1.0f, 1.0f}, {0.7f,  0.2f,  2.0f}},
-        { {1.0f, 1.0f, 1.0f}, {2.3f, -3.3f, -4.0f}},
-        { {1.0f, 1.0f, 1.0f}, {-4.0f,  2.0f, -12.0f}},
-        { {1.0f, 1.0f, 1.0f}, {0.0f,  0.0f, -3.0f}}
+        { {0.1f, 0.0f, 0.0f}, {0.7f,  0.2f,  2.0f}},
+        { {0.1f, 0.0f, 0.0f}, {2.3f, -3.3f, -4.0f}},
+        { {0.1f, 0.0f, 0.0f}, {-4.0f,  2.0f, -12.0f}},
+        { {0.1f, 0.0f, 0.0f}, {0.0f,  0.0f, -3.0f}}
     };
 
-    SpotLight spotlight({1.0f, 1.0f, 1.0f}, camera.Position, camera.Front);
+    SpotLight spotlight({0.5f, 0.5f, 0.5f}, camera.Position, camera.Front);
 
     Texture textureContainer        ("resources/textures/container2.png",          TexParam::REPEAT);
     Texture textureContainerSpecular("resources/textures/container2_specular.png", TexParam::REPEAT);
@@ -222,7 +222,7 @@ int main()
     InitImGui(window);
 
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -316,18 +316,19 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void processInputs(GLFWwindow* window)
 {
+    using enum CamMovement;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(CamMovement::FORWARD, deltaTime);
+        camera.ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(CamMovement::BACKWARD, deltaTime);
+        camera.ProcessKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(CamMovement::LEFT, deltaTime);
+        camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(CamMovement::RIGHT, deltaTime);
+        camera.ProcessKeyboard(RIGHT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        camera.ProcessKeyboard(CamMovement::UP, deltaTime);
+        camera.ProcessKeyboard(UP, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        camera.ProcessKeyboard(CamMovement::DOWN, deltaTime);
+        camera.ProcessKeyboard(DOWN, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
