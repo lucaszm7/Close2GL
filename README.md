@@ -1,8 +1,7 @@
-# GameEngine
+# Close2GL
 
-
-Is an OpenGL "renderer" of arbitrary geometries.
-Supporting multiple scenes with an API for loading and controlling the models.
+Is a software rasterizer integrated into the engine.
+Its goal is to produce the same result as OpenGL but instead of using OpenGL, everything is done on the CPU.
 
 # Cloning the Repository
 
@@ -16,9 +15,6 @@ Then on windows PowerShell
 .\build.ps1
 ```
 # Close 2 GL
-
-Is a software rasterizer integrated into the engine.
-Its goal is to produce the same result as OpenGL but instead of using OpenGL, everything is done on the CPU.
 
 # Features
 
